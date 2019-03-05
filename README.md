@@ -60,6 +60,6 @@ The library uses `debug` module for logging. To get full log, set environment va
 ### Command line usage
 You can use the library directly from command line to configure WiFi:
 ```
-npm install flash-config
+npm install -g flash-config
 env DEBUG=* flash-config wifi.txt
 ```
