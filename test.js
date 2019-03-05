@@ -1,7 +1,11 @@
 let flashConfig = require("./flash-config.js")();
 
-flashConfig.read("wifi.txt", flashConfig.translateText, config => {
-    console.info(config);
+flashConfig.watch({
+    name: "wifi.txt",
+    format: flashConfig.text,
+    callback: async config => {
+        console.info(JSON.stringify(config, null, 2));
+    }
 });
 
 //setTimeout(() => console.info("EXIT"), 10000);
