@@ -60,6 +60,5 @@ The library uses `debug` module for logging. To get full log, set environment va
 ### Command line usage
 You can use the library directly from command line to configure WiFi:
 ```
-npm install -g flash-config
-flash-config wifi.txt
+npx flash-config
 ```
