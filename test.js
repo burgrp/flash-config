@@ -1,5 +1,6 @@
 let flashConfig = require("./flash-config.js")();
 
+
 flashConfig.watch({
     name: "wifi.txt",
     format: flashConfig.text,

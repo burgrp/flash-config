@@ -5,5 +5,7 @@
   "main": "flash-config.js",
   "author": "Pavel Burgr <pb@drake.cz>",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "debug": "^4.1.1"
+  }
 }
