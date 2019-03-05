@@ -9,6 +9,8 @@ To give user a feedback about operation result, the library either:
 
 The generic configuration API is very simple:
 ```js
+const flashConfig = require("flash-config").flashConfig();
+
 flashConfig.watch({
     name: "config.json",
     format: flashConfig.json,
@@ -21,6 +23,9 @@ flashConfig.watch({
 Because most common task is to configure WiFi connection, there is a built-in support to configure Network-Manager.
 
 ```js
+const flashConfig = require("flash-config").flashConfig();
+const networkManager = require("flash-config").networkManager();
+
 flashConfig.watch({
     name: "wifi.txt",
     format: flashConfig.text,
