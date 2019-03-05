@@ -1,6 +1,7 @@
 const fs = require("fs");
 const pro = require("util").promisify;
-const debug = require("debug")("app:debug"); 
+const exec = require("./exec.js");
+const debug = require("debug")("app:debug");
 const info = require("debug")("app:info");
 const error = require("debug")("app:error");
 
@@ -36,29 +37,36 @@ module.exports = options => {
         async function checkFile(path, watchedFile) {
             let prefix = (path === "/" ? "" : path) + "/";
             let configFileName = prefix + watchedFile.name;
-            let errorFileName = prefix + "failed-" + watchedFile.name + (watchedFile.name.endsWith(".txt")? "": ".txt");
+            let errorFileName = prefix + "failed-" + watchedFile.name + (watchedFile.name.endsWith(".txt") ? "" : ".txt");
 
             debug(`Checking configuration ${configFileName}`);
             try {
+
+                let str = (await pro(fs.readFile)(configFileName)).toString();
+
                 try {
                     await pro(fs.unlink)(errorFileName);
                 } catch {
                     // fall through
                 }
 
-                let str = (await pro(fs.readFile)(configFileName)).toString();
                 try {
+
                     info(`Configuring by ${configFileName}`);
                     let value = (watchedFile.format || (l => l))(str);
                     await watchedFile.callback(value, watchedFile, configFileName);
                     await pro(fs.rename)(configFileName, prefix + "done-" + watchedFile.name);
+
                 } catch (e) {
 
                     let message = `Error configuring by ${configFileName}: ${e.message || e}`;
                     error(message);
-                    
                     await pro(fs.writeFile)(errorFileName, message);
+
                 }
+
+                await exec("sync");
+
             } catch {
                 // fall through
             }

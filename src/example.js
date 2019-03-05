@@ -12,4 +12,10 @@ flashConfig.watch({
     }
 });
 
-//setTimeout(() => console.info("EXIT"), 10000);
+flashConfig.watch({
+    name: "config.json",
+    format: flashConfig.json,
+    callback: async config => {
+        console.info("I got my configuration:", config);
+    }
+});

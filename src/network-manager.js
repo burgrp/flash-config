@@ -1,24 +1,7 @@
-const { execFile } = require("child_process");
+const exec = require("./exec.js");
 const debug = require("debug")("app:debug");
 const info = require("debug")("app:info");
 const error = require("debug")("app:error");
-
-async function nmcli(args) {
-    debug("nmcli", ...args);
-    return new Promise((resolve, reject) => {
-
-        const child = execFile("nmcli", args, (error, stdout, stderr) => {
-            if (error) {
-                reject(error);
-            } else if (child.exitCode !== 0) {
-                reject(new Error(`Error ${child.exitCode}: ${stderr}`));
-            } else {
-                resolve(stdout);
-            }
-        });
-
-    });
-}
 
 let asyncWait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -31,7 +14,7 @@ module.exports = options => {
                 throw new Error("missing ssid");
             }
 
-            let connectionExists = async () => (await nmcli(["-t", "--fields", "NAME,TYPE", "con"]))
+            let connectionExists = async () => (await exec("nmcli", ["-t", "--fields", "NAME,TYPE", "con"]))
                 .split("\n")
                 .map(l => {
                     let fields = l.split(":");
@@ -40,7 +23,7 @@ module.exports = options => {
                 .some(i => i.type === "802-11-wireless" && i.name === connectionName);
 
             if (! await connectionExists()) {
-                nmcli(["con", "add", "con-name", connectionName, "type", "wifi", "ifname", "*", "ssid", config.ssid]);
+                exec("nmcli", ["con", "add", "con-name", connectionName, "type", "wifi", "ifname", "*", "ssid", config.ssid]);
 
                 for (let c = 0; c < 10; c++) {
                     await asyncWait(1000);
@@ -75,14 +58,14 @@ module.exports = options => {
                 properties["ipv4.method"] = "auto";
             }
 
-            await nmcli([
+            await exec("nmcli", [
                 "con",
                 "mod",
                 connectionName,
                 ...Object.entries(properties).reduce((a, e) => [...a, e[0], e[1]], [])
             ]);
 
-            await nmcli([
+            await exec("nmcli", [
                 "con",
                 "up",
                 connectionName

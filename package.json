@@ -2,7 +2,7 @@
   "name": "flash-config",
   "version": "1.0.0",
   "description": "",
-  "main": "flash-config.js",
+  "main": "src/index.js",
   "author": "Pavel Burgr <pb@drake.cz>",
   "license": "ISC",
   "dependencies": {
