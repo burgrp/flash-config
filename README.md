@@ -36,7 +36,7 @@ flashConfig.watch({
 });
 ```
 
-Check [example.js](./src/example.js) for complete code.
+Check [example.js](https://github.com/burgrp/flash-config/blob/master/src/example.js) for complete code.
 
 Note the `format` property of watch parameter. This is a reference to converter function, which takes file content as string and returns a js value. There are two built-in converters:
 
