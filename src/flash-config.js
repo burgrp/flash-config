@@ -4,7 +4,7 @@ const debug = require("debug")("app:debug");
 const info = require("debug")("app:info");
 const error = require("debug")("app:error");
 
-module.exports = config => {
+module.exports = options => {
 
     let watchedFiles = [];
 
@@ -30,21 +30,34 @@ module.exports = config => {
     function checkMounts() {
 
         function scheduleNextCheck() {
-            setTimeout(checkMounts, 1000);
+            //setTimeout(checkMounts, 1000);
         }
 
         async function checkFile(path, watchedFile) {
-            let fileName = (path === "/" ? "" : path) + "/" + watchedFile.name;
+            let prefix = (path === "/" ? "" : path) + "/";
+            let configFileName = prefix + watchedFile.name;
+            let errorFileName = prefix + "failed-" + watchedFile.name + (watchedFile.name.endsWith(".txt")? "": ".txt");
 
-            debug(`Checking configuration ${fileName}`);
+            debug(`Checking configuration ${configFileName}`);
             try {
-                let str = (await pro(fs.readFile)(fileName)).toString();
                 try {
-                    info(`Configuring by ${fileName}`);
+                    await pro(fs.unlink)(errorFileName);
+                } catch {
+                    // fall through
+                }
+
+                let str = (await pro(fs.readFile)(configFileName)).toString();
+                try {
+                    info(`Configuring by ${configFileName}`);
                     let value = (watchedFile.format || (l => l))(str);
-                    await watchedFile.callback(value, watchedFile, fileName);
+                    await watchedFile.callback(value, watchedFile, configFileName);
+                    await pro(fs.rename)(configFileName, prefix + "done-" + watchedFile.name);
                 } catch (e) {
-                    error(`Error configuring by ${fileName}: ${e.message || e}`)
+
+                    let message = `Error configuring by ${configFileName}: ${e.message || e}`;
+                    error(message);
+                    
+                    await pro(fs.writeFile)(errorFileName, message);
                 }
             } catch {
                 // fall through
