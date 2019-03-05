@@ -10,5 +10,6 @@
   },
   "bin": {
     "flash-config": "./src/cli.js"
-  }
+  },
+  "keywords": ["configuration", "config", "usb", "flash", "wifi", "headless", "raspberry", "orange", "pi"]
 }
