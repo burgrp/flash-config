@@ -30,7 +30,7 @@ module.exports = options => {
     function checkMounts() {
 
         function scheduleNextCheck() {
-            //setTimeout(checkMounts, 1000);
+            setTimeout(checkMounts, 1000);
         }
 
         async function checkFile(path, watchedFile) {

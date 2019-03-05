@@ -20,6 +20,8 @@ async function nmcli(args) {
     });
 }
 
+let asyncWait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 module.exports = options => {
     return {
         async configure(config, connectionName = "Default") {
@@ -29,7 +31,7 @@ module.exports = options => {
                 throw new Error("missing ssid");
             }
 
-            const connectionExists = (await nmcli(["-t", "--fields", "NAME,TYPE", "con"]))
+            let connectionExists = async () => (await nmcli(["-t", "--fields", "NAME,TYPE", "con"]))
                 .split("\n")
                 .map(l => {
                     let fields = l.split(":");
@@ -37,8 +39,15 @@ module.exports = options => {
                 })
                 .some(i => i.type === "802-11-wireless" && i.name === connectionName);
 
-            if (!connectionExists) {
+            if (! await connectionExists()) {
                 nmcli(["con", "add", "con-name", connectionName, "type", "wifi", "ifname", "*", "ssid", config.ssid]);
+
+                for (let c = 0; c < 10; c++) {
+                    await asyncWait(1000);
+                    if (await connectionExists()) {
+                        break;
+                    }
+                }
             }
 
             properties = {};
