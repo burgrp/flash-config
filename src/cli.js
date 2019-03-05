@@ -17,6 +17,7 @@ flashConfig.watch({
             console.info(`Successfully connected to ${config.ssid}`);
         } catch (e) {
             console.error(`Error connecting to: ${config.ssid}: ${e.message || e}`);
+            throw e;
         }
     }
 });
