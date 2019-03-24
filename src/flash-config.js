@@ -107,12 +107,13 @@ module.exports = options => {
         });
     }
 
-    checkMounts();
-
     return {
         watch(options) {
             watchedFiles.push(options);
+            return this;
         },
+
+        start: checkMounts,
 
         text: readText,
         json: readJson
