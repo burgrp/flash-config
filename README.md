@@ -17,7 +17,7 @@ flashConfig.watch({
     callback: async config => {
         console.info("I got my configuration:", config);
     }
-});
+}).start();
 ```
 
 Because most common task is to configure WiFi connection, there is a built-in support to configure Network-Manager.
@@ -33,7 +33,7 @@ flashConfig.watch({
         await networkManager.configure(config, "TEST");
         console.info(`BINGO, connection to ${config.ssid} configured!`);
     }
-});
+}).start();
 ```
 
 Check [example.js](https://github.com/burgrp/flash-config/blob/master/src/example.js) for complete code.
